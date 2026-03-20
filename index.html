@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="新手养宠指南：温馨、高级、简约的人文关怀设计，提供百科搜索、准备清单、社区、禁食数据库与粮食测评等模块。" />
+    <title>新手养宠指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cream: '#F7F3EA',
+              sage: '#9EB39A',
+              sand: '#D6C3A1',
+              forest: '#40614E',
+              cocoa: '#5C4D3C'
+            },
+            dropShadow: {
+              soft: '0 2px 8px rgba(0,0,0,0.06)'
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html, body {
+        font-family: 'Noto Sans SC', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      .cursor-cat {
+        cursor: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2732%27%20height%3D%2732%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%3Ccircle%20cx%3D%2710%27%20cy%3D%278%27%20r%3D%273%27%20fill%3D%27%239EB39A%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%276%27%20r%3D%273%27%20fill%3D%27%239EB39A%27/%3E%3Ccircle%20cx%3D%2722%27%20cy%3D%278%27%20r%3D%273%27%20fill%3D%27%239EB39A%27/%3E%3Cpath%20d%3D%27M16%2012c6%200%2010%204%2010%209%200%204-3%207-10%207s-10-3-10-7c0-5%204-9%2010-9z%27%20fill%3D%27%23D6C3A1%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2721%27%20r%3D%274%27%20fill%3D%27%23F7F3EA%27/%3E%3C/g%3E%3C/svg%3E') 16 16, auto;
+      }
+      .cursor-dog {
+        cursor: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2732%27%20height%3D%2732%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%3Cpath%20d%3D%27M6%2016c0-6%204-10%2010-10s10%204%2010%2010v6c0%202-2%204-4%204h-12c-2%200-4-2-4-4v-6z%27%20fill%3D%27%23D6C3A1%27/%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2715%27%20r%3D%272%27%20fill%3D%27%235C4D3C%27/%3E%3Ccircle%20cx%3D%2720%27%20cy%3D%2715%27%20r%3D%272%27%20fill%3D%27%235C4D3C%27/%3E%3Cpath%20d%3D%27M14%2021c0%202%204%202%204%200%27%20stroke%3D%27%235C4D3C%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27/%3E%3Cpath%20d%3D%27M6%2010c2-2%204-3%206-3%27%20stroke%3D%27%239EB39A%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27/%3E%3Cpath%20d%3D%27M26%2010c-2-2-4-3-6-3%27%20stroke%3D%27%239EB39A%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27/%3E%3C/g%3E%3C/svg%3E') 16 16, auto;
+      }
+      .glass {
+        backdrop-filter: saturate(180%) blur(12px);
+        -webkit-backdrop-filter: saturate(180%) blur(12px);
+      }
+    </style>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body class="min-h-screen bg-cream text-cocoa">
+    <div id="root"></div>
+    <script type="text/babel">
+      const SUPABASE_URL = 'https://wkcgwmvgpofmvqzqhrbd.supabase.co'
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrY2d3bXZncG9mbXZxenFocmJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzI5MzgsImV4cCI6MjA4OTQwODkzOH0.5RJ0hdWcUH_CTzuIHo7aIB_0epS4Spmrwsz2Gzt87hw'
+      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      function useAuth() {
+        const [session, setSession] = React.useState(null)
+        const [user, setUser] = React.useState(null)
+        React.useEffect(() => {
+          let mounted = true
+          sb.auth.getSession().then(({ data }) => {
+            if (!mounted) return
+            setSession(data.session)
+            setUser(data.session?.user || null)
+          })
+          const { data: sub } = sb.auth.onAuthStateChange((_e, s) => {
+            setSession(s)
+            setUser(s?.user || null)
+          })
+          return () => {
+            mounted = false
+            sub.subscription.unsubscribe()
+          }
+        }, [])
+        return { session, user }
+      }
+      const encyclopedia = [
+        { title: '猫咪基础疫苗', desc: '三联疫苗、加强针时间与注意事项', tag: '健康' },
+        { title: '狗狗体外驱虫', desc: '常见体外寄生虫与驱虫频率', tag: '驱虫' },
+        { title: '幼猫换粮指南', desc: '循序渐进，观察呕吐与软便', tag: '饮食' },
+        { title: '猫砂选择', desc: '矿砂、豆腐砂、混合砂的优劣', tag: '用品' },
+        { title: '犬猫绝育前后', desc: '手术风险、术后护理与营养', tag: '健康' },
+        { title: '日常梳理与洗护', desc: '梳毛、洗澡、剪指甲的正确方法', tag: '护理' }
+      ]
+
+      const initialChecklist = [
+        { id: 'litter', text: '猫砂盆/狗厕所与吸水垫' },
+        { id: 'food', text: '主粮与零食（循序换粮）' },
+        { id: 'bowls', text: '食盆、水碗或饮水机' },
+        { id: 'bed', text: '窝/笼与安置空间' },
+        { id: 'care', text: '梳子、洗护、指甲剪、消毒用品' },
+        { id: 'leash', text: '牵引绳、胸背与外出箱' },
+        { id: 'health', text: '疫苗计划、驱虫药与体检预约' },
+        { id: 'safety', text: '安全门窗、隐患清理、紧急联系人' }
+      ]
+
+      const communityPosts = [
+        { id: 1, user: '阿喵今天也很乖', time: '2 小时前', text: '第一次洗澡，紧张但勇敢。', img: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80&w=1200&auto=format&fit=crop' },
+        { id: 2, user: '遛狗去咯', time: '昨天', text: '新领养的狗狗在公园认识了小伙伴。', img: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=1200&auto=format&fit=crop' },
+        { id: 3, user: '撸猫大使', time: '3 天前', text: '晒太阳的午后时光。', img: 'https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=1200&auto=format&fit=crop' }
+      ]
+
+      const forbiddenData = [
+        { id: 'chocolate', type: '食物', name: '巧克力', risk: '高', note: '含可可碱，可能导致心律失常与中毒' },
+        { id: 'grape', type: '食物', name: '葡萄/葡萄干', risk: '高', note: '可能引起急性肾衰竭' },
+        { id: 'onion', type: '食物', name: '洋葱/大葱/蒜', risk: '中', note: '破坏红细胞，引发溶血性贫血' },
+        { id: 'xylitol', type: '食物', name: '木糖醇', risk: '高', note: '致低血糖与肝损伤，狗尤其危险' },
+        { id: 'ibuprofen', type: '药品', name: '布洛芬', risk: '高', note: '可能造成胃肠出血、肾损伤，禁用' },
+        { id: 'acetaminophen', type: '药品', name: '对乙酰氨基酚', risk: '高', note: '对猫极其危险，可能致命' },
+        { id: 'alcohol', type: '食物', name: '酒精', risk: '高', note: '中枢抑制与低血糖风险' },
+        { id: 'bones', type: '食物', name: '熟骨头', risk: '中', note: '易碎刺伤消化道，窒息风险' }
+      ]
+
+      const foodReviews = [
+        { id: 'brand-a', name: 'A 品牌全价猫粮', img: 'https://images.unsplash.com/photo-1604908554027-6d2709b65703?q=80&w=1200&auto=format&fit=crop', rating: 4.5, pros: ['配方均衡', '颗粒适中', '适口性好'], cons: ['价格略高'] },
+        { id: 'brand-b', name: 'B 品牌无谷狗粮', img: 'https://images.unsplash.com/photo-1612538490058-4f33405b9a7a?q=80&w=1200&auto=format&fit=crop', rating: 4.0, pros: ['高蛋白', '成分透明'], cons: ['对部分肠胃偏敏感'] }
+      ]
+
+      function SearchBar({ placeholder, onSearch }) {
+        const [q, setQ] = React.useState('')
+        React.useEffect(() => {
+          const id = setTimeout(() => onSearch(q.trim()), 200)
+          return () => clearTimeout(id)
+        }, [q])
+        return (
+          <div className="w-full flex items-center gap-2 bg-white rounded-xl border border-sand/60 px-3 py-2 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-cocoa/60">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 105.5 5.5a7.5 7.5 0 0011.15 11.15z" />
+            </svg>
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={placeholder} className="flex-1 outline-none bg-transparent text-cocoa" />
+            {q && <button onClick={() => setQ('')} className="text-sm text-cocoa/60 hover:text-cocoa">清除</button>}
+          </div>
+        )
+      }
+
+      function SafetyBanner() {
+        const [hidden, setHidden] = React.useState(typeof window !== 'undefined' ? localStorage.getItem('safetyBanner') === 'dismissed' : false)
+        if (hidden) return null
+        return (
+          <div className="w-full bg-sage text-cream text-sm">
+            <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+              <div>本网页的建议不能代替专业诊断</div>
+              <button onClick={() => { localStorage.setItem('safetyBanner', 'dismissed'); setHidden(true) }} className="bg-cream text-forest rounded px-3 py-1 text-xs">我知道了</button>
+            </div>
+          </div>
+        )
+      }
+
+      function NavBar({ cursor, onCursorChange, user, onSignOut }) {
+        const [open, setOpen] = React.useState(false)
+        function navTo(path) {
+          window.location.hash = path
+          setOpen(false)
+        }
+        return (
+          <div className="sticky top-0 z-40 bg-cream/90 glass border-b border-sand/50">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="flex items-center justify-between h-16">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-sage/20 flex items-center justify-center text-forest drop-shadow-soft">🐾</div>
+                  <div className="font-semibold text-lg text-forest">新手养宠指南</div>
+                </div>
+                <div className="hidden md:flex items-center gap-6 text-cocoa">
+                  <button className="hover:text-forest" onClick={() => navTo('/')}>首页</button>
+                  <button className="hover:text-forest" onClick={() => navTo('/checklist')}>清单</button>
+                  <button className="hover:text-forest" onClick={() => navTo('/community')}>社区</button>
+                  <button className="hover:text-forest" onClick={() => navTo('/forbidden')}>禁食数据库</button>
+                  <button className="hover:text-forest" onClick={() => navTo('/reviews')}>粮测评</button>
+                  {!user ? (
+                    <button className="hover:text-forest" onClick={() => navTo('/auth')}>登录/注册</button>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm">你好，{(user.email || '用户').split('@')[0]}</span>
+                      <button className="hover:text-forest" onClick={onSignOut}>退出</button>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-cocoa/70">光标</span>
+                    <button title="小猫爪" onClick={() => onCursorChange('cat')} className={"w-8 h-8 rounded-full flex items-center justify-center border "+(cursor==='cat'?'border-forest bg-sage/30':'border-sand/60')}>
+                      🐱
+                    </button>
+                    <button title="小狗头" onClick={() => onCursorChange('dog')} className={"w-8 h-8 rounded-full flex items-center justify-center border "+(cursor==='dog'?'border-forest bg-sage/30':'border-sand/60')}>
+                      🐶
+                    </button>
+                    <button title="默认" onClick={() => onCursorChange('default')} className={"px-2 py-1 text-xs rounded-md border "+(cursor==='default'?'border-forest bg-sage/20':'border-sand/60')}>
+                      默认
+                    </button>
+                  </div>
+                </div>
+                <button className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border border-sand/60" onClick={() => setOpen(!open)}>
+                  <span className="sr-only">Toggle</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+              </div>
+              {open && (
+                <div className="md:hidden pb-4 flex flex-col gap-3 text-cocoa">
+                  <button className="text-left" onClick={() => navTo('/')}>首页</button>
+                  <button className="text-left" onClick={() => navTo('/checklist')}>清单</button>
+                  <button className="text-left" onClick={() => navTo('/community')}>社区</button>
+                  <button className="text-left" onClick={() => navTo('/forbidden')}>禁食数据库</button>
+                  <button className="text-left" onClick={() => navTo('/reviews')}>粮测评</button>
+                  {!user ? (
+                    <button className="text-left" onClick={() => navTo('/auth')}>登录/注册</button>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm">你好，{(user.email || '用户').split('@')[0]}</div>
+                      <button className="text-left hover:text-forest" onClick={onSignOut}>退出</button>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-cocoa/70">光标</span>
+                    <button title="小猫爪" onClick={() => onCursorChange('cat')} className={"w-8 h-8 rounded-full flex items-center justify-center border "+(cursor==='cat'?'border-forest bg-sage/30':'border-sand/60')}>
+                      🐱
+                    </button>
+                    <button title="小狗头" onClick={() => onCursorChange('dog')} className={"w-8 h-8 rounded-full flex items-center justify-center border "+(cursor==='dog'?'border-forest bg-sage/30':'border-sand/60')}>
+                      🐶
+                    </button>
+                    <button title="默认" onClick={() => onCursorChange('default')} className={"px-2 py-1 text-xs rounded-md border "+(cursor==='default'?'border-forest bg-sage/20':'border-sand/60')}>
+                      默认
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      function Home() {
+        const [store, setStore] = React.useState(encyclopedia)
+        const [results, setResults] = React.useState(encyclopedia)
+        const [query, setQuery] = React.useState('')
+        const [expanded, setExpanded] = React.useState({})
+        React.useEffect(() => {
+          let ignore = false
+          async function load() {
+            try {
+              const { data, error } = await sb.from('wiki').select('*').limit(1000)
+              if (!ignore && !error && data && data.length) {
+                const mapped = data.map(r => ({
+                  title: r.title || r.name || '',
+                  desc: r.description || r.desc || '',
+                  tag: r.tag || r.category || ''
+                }))
+                setStore(mapped)
+                setResults(mapped)
+              }
+            } catch {}
+          }
+          load()
+          return () => { ignore = true }
+        }, [])
+        function handleSearch(q) {
+          setQuery(q)
+          if (!q) { setResults(store); return }
+          const lower = q.toLowerCase()
+          setResults(store.filter(i => (i.title + ' ' + i.desc).toLowerCase().includes(lower)))
+          setExpanded({})
+        }
+        function toggleExpand(idx) {
+          setExpanded(prev => ({ ...prev, [idx]: !prev[idx] }))
+        }
+        return (
+          <div className="bg-gradient-to-b from-cream to-cream/70">
+            <section className="max-w-6xl mx-auto px-6 pt-10 pb-12">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h1 className="mt-4 text-3xl md:text-4xl font-semibold text-forest">新手养宠指南</h1>
+                  <p className="mt-3 text-cocoa/80">涵盖准备清单、社区分享、禁食数据库与粮食测评。</p>
+                  <div className="mt-6 max-w-xl"><SearchBar placeholder="搜索宠物百科，例如：猫咪驱虫、狗狗疫苗、饮食" onSearch={handleSearch} /></div>
+                </div>
+                <div className="hidden md:block">
+                  <div className="rounded-2xl border border-sand/60 bg-white p-6 shadow-sm">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="aspect-square rounded-xl bg-sage/30 flex items-center justify-center text-4xl">🐱</div>
+                      <div className="aspect-square rounded-xl bg-sand/30 flex items-center justify-center text-4xl">🐶</div>
+                      <div className="aspect-square rounded-xl bg-sage/30 flex items-center justify-center text-4xl">🫶</div>
+                    </div>
+                    <div className="mt-4 text-sm text-cocoa/70">以人文关怀为核心的宠物生活指南</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="max-w-6xl mx-auto px-6 pb-16">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-forest">{query ? '检索结果' : '热门百科'}</h2>
+              </div>
+              <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {results.map((it, idx) => (
+                  <div key={idx} className="rounded-2xl border border-sand/60 bg-white p-5 hover:shadow-md transition-shadow">
+                    <div className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-full bg-sage/20 text-forest">{it.tag || '未分类'}</div>
+                    <button className="mt-2 text-left text-lg font-semibold text-cocoa hover:text-forest" onClick={() => toggleExpand(idx)}>{it.title}</button>
+                    {expanded[idx] && (
+                      <div className="mt-2 text-sm text-cocoa/80 whitespace-pre-line break-words">{it.desc}</div>
+                    )}
+                  </div>
+                ))}
+                {results.length === 0 && <div className="col-span-full text-cocoa/70 text-sm">未找到相关条目</div>}
+              </div>
+            </section>
+          </div>
+        )
+      }
+
+      function useChecklist() {
+        const [items, setItems] = React.useState(() => {
+          try {
+            const raw = localStorage.getItem('checklist')
+            if (raw) return JSON.parse(raw)
+          } catch {}
+          return initialChecklist.map(i => ({ ...i, done: false }))
+        })
+        React.useEffect(() => { localStorage.setItem('checklist', JSON.stringify(items)) }, [items])
+        function toggle(id) { setItems(prev => prev.map(i => i.id === id ? { ...i, done: !i.done } : i)) }
+        function reset() { setItems(initialChecklist.map(i => ({ ...i, done: false }))) }
+        return { items, toggle, reset }
+      }
+
+      function Checklist() {
+        const { items, toggle, reset } = useChecklist()
+        const doneCount = items.filter(i => i.done).length
+        return (
+          <div className="max-w-3xl mx-auto px-6 py-10">
+            <h1 className="text-2xl font-semibold text-forest">新手准备清单</h1>
+            <div className="mt-2 text-cocoa/70 text-sm">已完成 {doneCount}/{items.length}</div>
+            <div className="mt-6 space-y-3">
+              {items.map(i => (
+                <label key={i.id} className="flex items-start gap-3 rounded-xl border border-sand/60 bg-white p-4 hover:border-sage/60">
+                  <input type="checkbox" checked={!!i.done} onChange={() => toggle(i.id)} className="mt-1 w-5 h-5 accent-forest" />
+                  <span className={i.done ? 'text-cocoa/60 line-through' : 'text-cocoa'}>{i.text}</span>
+                </label>
+              ))}
+            </div>
+            <div className="mt-6 flex gap-3">
+              <button onClick={reset} className="px-4 py-2 rounded-lg bg-sage text-cream">重置清单</button>
+              <a href="#/" className="px-4 py-2 rounded-lg border border-sand/60 bg-white">返回首页</a>
+            </div>
+          </div>
+        )
+      }
+
+      function Auth() {
+        const [tab, setTab] = React.useState('login')
+        const [email, setEmail] = React.useState('')
+        const [password, setPassword] = React.useState('')
+        const [name, setName] = React.useState('')
+        const [msg, setMsg] = React.useState('')
+        const [isError, setIsError] = React.useState(false)
+        const [popupMsg, setPopupMsg] = React.useState('')
+        React.useEffect(() => {
+          if (isError && msg) {
+            setPopupMsg(msg)
+            const t = setTimeout(() => setPopupMsg(''), 4000)
+            return () => clearTimeout(t)
+          }
+        }, [isError, msg])
+        async function handleLogin() {
+          setMsg('')
+          const { error } = await sb.auth.signInWithPassword({ email, password })
+          if (error) { setIsError(true); setMsg(error.message) }
+          else {
+            const { data: userData } = await sb.auth.getUser()
+            const u = userData?.user
+            if (u?.id) {
+              await sb.from('profiles').upsert({ id: u.id, email: u.email, nickname: u.user_metadata?.nickname || name })
+            }
+            setIsError(false); setMsg('登录成功')
+            window.location.hash = '/'
+          }
+        }
+        async function handleRegister() {
+          setMsg('')
+          const { data, error } = await sb.auth.signUp({ email, password, options: { data: { nickname: name }, emailRedirectTo: window.location.origin + '/#/auth' } })
+          if (error) { setIsError(true); setMsg(error.message) }
+          else {
+            setIsError(false); setMsg(data?.user ? '注册成功，已创建用户' : '注册成功，如需验证请查收邮箱')
+            try {
+              if (data?.user?.id) {
+                await sb.from('profiles').upsert({ id: data.user.id, email: data.user.email, nickname: name })
+              }
+            } catch {}
+            try {
+              const { error: loginErr } = await sb.auth.signInWithPassword({ email, password })
+              if (!loginErr) {
+                const { data: userData } = await sb.auth.getUser()
+                const u = userData?.user
+                if (u?.id) await sb.from('profiles').upsert({ id: u.id, email: u.email, nickname: name })
+              }
+            } catch {}
+          }
+        }
+        return (
+          <div className="max-w-md mx-auto px-6 py-10">
+            {popupMsg && <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-600 text-cream px-4 py-2 rounded-lg shadow">{popupMsg}</div>}
+            <h1 className="text-2xl font-semibold text-forest">账号中心</h1>
+            <div className="mt-6 grid grid-cols-2 p-1 rounded-xl bg-sage/20">
+              <button onClick={() => setTab('login')} className={(tab==='login'?'bg-sage text-cream ':'text-forest ')+'rounded-lg py-2'}>登录</button>
+              <button onClick={() => setTab('register')} className={(tab==='register'?'bg-sage text-cream ':'text-forest ')+'rounded-lg py-2'}>注册</button>
+            </div>
+            {tab === 'login' ? (
+              <div className="mt-6 space-y-4 rounded-2xl border border-sand/60 bg-white p-6">
+                <label className="block">
+                  <div className="text-sm text-cocoa/80 mb-1">邮箱</div>
+                  <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full rounded-lg border border-sand/60 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30" />
+                </label>
+                <label className="block">
+                  <div className="text-sm text-cocoa/80 mb-1">密码</div>
+                  <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full rounded-lg border border-sand/60 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30" />
+                </label>
+                <button onClick={handleLogin} className="w-full rounded-lg bg-sage text-cream py-2">登录</button>
+                {msg && <div className={"text-xs "+(isError?'text-red-600':'text-cocoa/70')}>{msg}</div>}
+              </div>
+            ) : (
+              <div className="mt-6 space-y-4 rounded-2xl border border-sand/60 bg-white p-6">
+                <label className="block">
+                  <div className="text-sm text-cocoa/80 mb-1">昵称</div>
+                  <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="爱撸猫的我" className="w-full rounded-lg border border-sand/60 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30" />
+                </label>
+                <label className="block">
+                  <div className="text-sm text-cocoa/80 mb-1">邮箱</div>
+                  <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full rounded-lg border border-sand/60 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30" />
+                </label>
+                <label className="block">
+                  <div className="text-sm text-cocoa/80 mb-1">密码</div>
+                  <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="至少 8 位" className="w-full rounded-lg border border-sand/60 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30" />
+                </label>
+                <button onClick={handleRegister} className="w-full rounded-lg bg-sage text-cream py-2">注册</button>
+                {msg && <div className={"text-xs "+(isError?'text-red-600':'text-cocoa/70')}>{msg}</div>}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      function Community({ user }) {
+        const [items, setItems] = React.useState(communityPosts)
+        const [loading, setLoading] = React.useState(true)
+        const [showForm, setShowForm] = React.useState(false)
+        const [text, setText] = React.useState('')
+        const [image, setImage] = React.useState('')
+        React.useEffect(() => {
+          let ignore = false
+          async function load() {
+            try {
+              const { data, error } = await sb.from('posts').select('*').order('created_at', { ascending: false })
+              if (!ignore && !error && data) {
+                const mapped = data.map(p => ({
+                  id: p.id || Math.random(),
+                  user: p.user_name || p.user || (p.author || '匿名'),
+                  time: p.created_at ? new Date(p.created_at).toLocaleString() : (p.time || ''),
+                  text: p.content || p.text || '',
+                  img: p.image_url || p.img || ''
+                }))
+                setItems(mapped)
+              } else {
+                if (!ignore) setItems(communityPosts)
+              }
+            } catch {
+              if (!ignore) setItems(communityPosts)
+            } finally {
+              if (!ignore) setLoading(false)
+            }
+          }
+          load()
+          return () => { ignore = true }
+        }, [])
+        async function submit() {
+          if (!user) {
+            alert('请先登录')
+            return
+          }
+          const insert = { user_id: user.id, user_name: user.email, content: text, image_url: image }
+          const { error } = await sb.from('posts').insert(insert)
+          if (!error) {
+            const { data } = await sb.from('posts').select('*').order('created_at', { ascending: false })
+            if (data) {
+              const mapped = data.map(p => ({
+                id: p.id || Math.random(),
+                user: p.user_name || p.user || (p.author || '匿名'),
+                time: p.created_at ? new Date(p.created_at).toLocaleString() : (p.time || ''),
+                text: p.content || p.text || '',
+                img: p.image_url || p.img || ''
+              }))
+              setItems(mapped)
+            }
+            setText('')
+            setImage('')
+            setShowForm(false)
+          } else {
+            const local = { id: Math.random(), user: user.email, time: new Date().toLocaleString(), text, img: image }
+            setItems([local, ...items])
+            setText('')
+            setImage('')
+            setShowForm(false)
+          }
+        }
+        return (
+          <div className="max-w-6xl mx-auto px-6 py-10">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-semibold text-forest">宠物日常社区</h1>
+              <button onClick={() => setShowForm(v => !v)} className="rounded-lg bg-sage text-cream px-4 py-2">{showForm?'收起':'发布'}</button>
+            </div>
+            {showForm && (
+              <div className="mt-4 rounded-2xl border border-sand/60 bg-white p-4 grid gap-3">
+                <input value={text} onChange={(e)=>setText(e.target.value)} placeholder="记下今天和它的日常" className="rounded-lg border border-sand/60 px-3 py-2" />
+                <input value={image} onChange={(e)=>setImage(e.target.value)} placeholder="图片 URL（可选）" className="rounded-lg border border-sand/60 px-3 py-2" />
+                <button onClick={submit} className="rounded-lg bg-forest text-cream px-4 py-2">发布到社区</button>
+              </div>
+            )}
+            <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map(p => (
+                <div key={p.id} className="rounded-2xl border border-sand/60 bg-white overflow-hidden">
+                  {p.img && <img src={p.img} alt="" className="w-full h-48 object-cover" />}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between text-sm text-cocoa/70">
+                      <div className="font-medium text-cocoa">{p.user}</div>
+                      <div>{p.time}</div>
+                    </div>
+                    <div className="mt-2 text-cocoa">{p.text}</div>
+                    <div className="mt-3 flex items-center gap-4 text-sm text-cocoa/70">
+                      <button className="hover:text-forest">👍 赞</button>
+                      <button className="hover:text-forest">💬 评论</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {!loading && items.length===0 && <div className="text-sm text-cocoa/70">暂无内容</div>}
+            </div>
+          </div>
+        )
+      }
+
+      function Forbidden() {
+        const [q, setQ] = React.useState('')
+        const [type, setType] = React.useState('全部')
+        const filtered = forbiddenData.filter(i => {
+          const text = (i.name + i.type + i.note).toLowerCase()
+          const okType = type === '全部' || i.type === type
+          return okType && text.includes(q.toLowerCase())
+        })
+        return (
+          <div className="max-w-6xl mx-auto px-6 py-10">
+            <h1 className="text-2xl font-semibold text-forest">禁食食物/药品数据库</h1>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="搜索食物或药品，如：巧克力、布洛芬" className="flex-1 min-w-[220px] rounded-lg border border-sand/60 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30" />
+              <select value={type} onChange={(e) => setType(e.target.value)} className="rounded-lg border border-sand/60 bg-white px-3 py-2">
+                <option>全部</option>
+                <option>食物</option>
+                <option>药品</option>
+              </select>
+            </div>
+            <div className="mt-6 rounded-2xl border border-sand/60 overflow-hidden">
+              <div className="grid grid-cols-12 bg-sage/20 text-cocoa/80 text-sm">
+                <div className="col-span-3 p-3">名称</div>
+                <div className="col-span-2 p-3">类别</div>
+                <div className="col-span-2 p-3">风险级别</div>
+                <div className="col-span-5 p-3">说明</div>
+              </div>
+              {filtered.map(i => (
+                <div key={i.id} className="grid grid-cols-12 border-t border-sand/50 bg-white">
+                  <div className="col-span-3 p-3">{i.name}</div>
+                  <div className="col-span-2 p-3">{i.type}</div>
+                  <div className={"col-span-2 p-3 font-medium "+(i.risk==='高'?'text-red-600':i.risk==='中'?'text-amber-600':'text-forest')}>{i.risk}</div>
+                  <div className="col-span-5 p-3 text-cocoa/80">{i.note}</div>
+                </div>
+              ))}
+              {filtered.length === 0 && <div className="p-6 text-sm text-cocoa/70 bg-white">暂无匹配项</div>}
+            </div>
+            <div className="mt-4 text-xs text-cocoa/60">信息仅供科普参考，若出现中毒风险应联系专业兽医</div>
+          </div>
+        )
+      }
+
+      function Stars({ value }) {
+        const full = Math.floor(value)
+        const half = value - full >= 0.5
+        return (
+          <div className="flex items-center">
+            {[...Array(full)].map((_, i) => <span key={i} className="text-amber-500">★</span>)}
+            {half && <span className="text-amber-500">☆</span>}
+            {[...Array(5 - full - (half ? 1 : 0))].map((_, i) => <span key={'e'+i} className="text-sand/60">★</span>)}
+          </div>
+        )
+      }
+
+      function Reviews() {
+        return (
+          <div className="max-w-6xl mx-auto px-6 py-10">
+            <h1 className="text-2xl font-semibold text-forest">宠物粮测评</h1>
+            <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {foodReviews.map(r => (
+                <div key={r.id} className="rounded-2xl border border-sand/60 bg-white overflow-hidden">
+                  <img src={r.img} alt="" className="w-full h-40 object-cover" />
+                  <div className="p-4">
+                    <div className="font-medium text-cocoa">{r.name}</div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Stars value={r.rating} />
+                      <span className="text-sm text-cocoa/70">{r.rating.toFixed(1)}</span>
+                    </div>
+                    <div className="mt-3 text-sm">
+                      <div className="text-cocoa/70">优点</div>
+                      <ul className="list-disc pl-5 text-cocoa">
+                        {r.pros.map((p, i) => <li key={i}>{p}</li>)}
+                      </ul>
+                    </div>
+                    <div className="mt-2 text-sm">
+                      <div className="text-cocoa/70">注意</div>
+                      <ul className="list-disc pl-5 text-cocoa">
+                        {r.cons.map((c, i) => <li key={i}>{c}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      function getRoute() {
+        const hash = window.location.hash || '#/'
+        const path = hash.replace('#', '')
+        return path
+      }
+
+      function App() {
+        const [route, setRoute] = React.useState(getRoute())
+        const [cursor, setCursor] = React.useState(typeof window !== 'undefined' ? localStorage.getItem('cursorStyle') || 'default' : 'default')
+        const { user } = useAuth()
+        React.useEffect(() => {
+          function onHash() { setRoute(getRoute()) }
+          window.addEventListener('hashchange', onHash)
+          return () => window.removeEventListener('hashchange', onHash)
+        }, [])
+        React.useEffect(() => {
+          if (cursor === 'cat') {
+            document.documentElement.classList.add('cursor-cat')
+            document.documentElement.classList.remove('cursor-dog')
+          } else if (cursor === 'dog') {
+            document.documentElement.classList.add('cursor-dog')
+            document.documentElement.classList.remove('cursor-cat')
+          } else {
+            document.documentElement.classList.remove('cursor-cat')
+            document.documentElement.classList.remove('cursor-dog')
+          }
+          localStorage.setItem('cursorStyle', cursor)
+        }, [cursor])
+        function renderPage() {
+          if (route === '/' || route === '') return <Home />
+          if (route === '/checklist') return <Checklist />
+          if (route === '/auth') return <Auth />
+          if (route === '/community') return <Community user={user} />
+          if (route === '/forbidden') return <Forbidden />
+          if (route === '/reviews') return <Reviews />
+          return <Home />
+        }
+        return (
+          <div className="min-h-screen flex flex-col">
+            <SafetyBanner />
+            <NavBar cursor={cursor} onCursorChange={setCursor} user={user} onSignOut={() => sb.auth.signOut()} />
+            <main className="flex-1">{renderPage()}</main>
+            <footer className="border-t border-sand/50 bg-cream px-6 py-8 text-sm text-cocoa/70">
+              <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
+                <div>© {new Date().getFullYear()} 新手养宠指南</div>
+                <div className="text-cocoa/60">以温馨、高级、简约的人文关怀为设计理念</div>
+              </div>
+            </footer>
+          </div>
+        )
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'))
+      root.render(<App />)
+    </script>
+  </body>
+  </html>
